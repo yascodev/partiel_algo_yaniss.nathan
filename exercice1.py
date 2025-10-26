@@ -52,20 +52,8 @@ def dijkstra(graphe, depart, arrivee):
     
     return distances[arrivee], chemin if chemin[0] == depart else "Pas de chemin"
 
-# Exemple d'utilisation: A vers F
+#  A vers F
 distance, chemin = dijkstra(graphe, "A", "F")
-print(f"Distance la plus courte de A à F: {distance}") # La distance de A à F est 15. (A -> C -> E -> D -> F: 2 + 3 + 4 + 11 = 20... Re-calculons)
-# A -> C -> E -> D: 2 + 3 + 4 = 9
-# A -> B -> D: 4 + 10 = 14
-# A -> B -> C -> E -> D: 4 + 5 + 3 + 4 = 16
-# Le chemin le plus court est A -> C (2) -> E (3) -> D (4) -> F (11) = 20. Non, c'est A-C(2)-E(3)-D(4)-F(11) = 20.
-# A -> C (2) -> E (3) -> D (4) -> F (11) -> 20.
-# A -> C(2)
-# A -> C -> E: 2 + 3 = 5
-# A -> B: 4
-# A -> C -> E -> D: 2 + 3 + 4 = 9
-# A -> B -> C: 4 + 5 = 9
-# A -> B -> D: 4 + 10 = 14
-# Chemin le plus court A-C-E-D-F est 2+3+4+11 = 20.
-# Le résultat est 20, le chemin est ['A', 'C', 'E', 'D', 'F'].
+print(f"Distance la plus courte de A à F: {distance}") 
+
 print(f"Chemin: {chemin}")
