@@ -1,5 +1,3 @@
-import heapq
-
 graphe = {
     "A": [("B", 4), ("C", 2)],
     "B": [("C", 5), ("D", 10)],
@@ -9,51 +7,46 @@ graphe = {
     "F": []
 }
 
-def dijkstra(graphe, depart, arrivee):
-    # Initialisation des distances: 0 pour le départ, infini pour les autres
+def dijkstra(graphe, depart):
+
     distances = {ville: float('inf') for ville in graphe}
     distances[depart] = 0
+
+    visites = set()
     
-    # File de priorité: (distance, noeud)
-    file_priorite = [(0, depart)]
     
-    # Pour reconstruire le chemin
-    predecesseurs = {ville: None for ville in graphe}
-    
-    while file_priorite:
-        # Prendre le nœud non visité avec la distance la plus petite
-        distance_actuelle, u = heapq.heappop(file_priorite)
+    while len(visites) < len(graphe):
         
-        # Si nous avons atteint la destination
-        if u == arrivee:
+        
+        min_distance = float('inf')
+        u = None
+        
+        
+        for ville in graphe:
+            if ville not in visites and distances[ville] < min_distance:
+                min_distance = distances[ville]
+                u = ville
+        
+        
+        if u is None:
             break
             
-        # Si la distance actuelle est déjà plus grande que la plus courte trouvée, ignorer
-        if distance_actuelle > distances[u]:
-            continue
-            
-        # Parcourir les voisins
+        
+        visites.add(u)
+        
+        
+        
         for v, poids in graphe[u]:
-            nouvelle_distance = distance_actuelle + poids
             
-            # Mise à jour si un chemin plus court est trouvé
+            nouvelle_distance = distances[u] + poids
+            
             if nouvelle_distance < distances[v]:
                 distances[v] = nouvelle_distance
-                predecesseurs[v] = u
-                heapq.heappush(file_priorite, (nouvelle_distance, v))
 
-    # Reconstruire le chemin
-    chemin = []
-    u = arrivee
-    while u is not None:
-        chemin.append(u)
-        u = predecesseurs[u]
-    chemin.reverse()
-    
-    return distances[arrivee], chemin if chemin[0] == depart else "Pas de chemin"
+    return distances
 
-#  A vers F
-distance, chemin = dijkstra(graphe, "A", "F")
-print(f"Distance la plus courte de A à F: {distance}") 
+distances_finales = dijkstra(graphe, "A")
+destination = "F"
 
-print(f"Chemin: {chemin}")
+
+print(f"Toutes les distances depuis A: {distances_finales}")
