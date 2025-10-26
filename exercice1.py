@@ -1,3 +1,5 @@
+import heapq
+
 graphe = {
     "A": [("B", 4), ("C", 2)],
     "B": [("C", 5), ("D", 10)],
@@ -7,46 +9,54 @@ graphe = {
     "F": []
 }
 
-def dijkstra(graphe, depart):
-
-    distances = {ville: float('inf') for ville in graphe}
+def dijkstra(graphe, depart, arrivee):
+    # Initialisation des distances
+    distances = {}
+    for ville in graphe:
+        distances[ville] = 1000000000  # très grand nombre pour infini
     distances[depart] = 0
 
-    visites = set()
-    
-    
-    while len(visites) < len(graphe):
-        
-        
-        min_distance = float('inf')
-        u = None
-        
-        
-        for ville in graphe:
-            if ville not in visites and distances[ville] < min_distance:
-                min_distance = distances[ville]
-                u = ville
-        
-        
-        if u is None:
+    # Pour reconstruire le chemin
+    predecesseurs = {}
+    for ville in graphe:
+        predecesseurs[ville] = None
+
+    # Tas pour gérer les villes à explorer
+    tas = []
+    heapq.heappush(tas, (0, depart))  # on ajoute la ville de départ vec distance de 0
+
+    # Boucle principale
+    while len(tas) > 0:
+        distance_actuelle, ville = heapq.heappop(tas)
+
+        # qaund one arrie on stop
+        if ville == arrivee:
             break
-            
-        
-        visites.add(u)
-        
-        
-        
-        for v, poids in graphe[u]:
-            
-            nouvelle_distance = distances[u] + poids
-            
-            if nouvelle_distance < distances[v]:
-                distances[v] = nouvelle_distance
 
-    return distances
+        # Parcourir les voisins
+        voisins = graphe[ville]
+        for voisin, poids in voisins:
+            nouvelle_distance = distance_actuelle + poids
+            if nouvelle_distance < distances[voisin]:
+                distances[voisin] = nouvelle_distance
+                predecesseurs[voisin] = ville
+                heapq.heappush(tas, (nouvelle_distance, voisin))
 
-distances_finales = dijkstra(graphe, "A")
-destination = "F"
+    # Reconstruction du chemin (après la boucle)
+    chemin = []
+    ville = arrivee
+    while ville != None:
+        chemin.append(ville)
+        ville = predecesseurs[ville]
+    chemin.reverse()
+
+    # Vérifier si le chemin existe
+    if len(chemin) == 0 or chemin[0] != depart:
+        return "Pas de chemin", []
+
+    return distances[arrivee], chemin
 
 
-print(f"Toutes les distances depuis A: {distances_finales}")
+distance, chemin = dijkstra(graphe, "A", "F")
+print("Distance la plus courte de A à F :", distance)
+print("Chemin :", chemin)
